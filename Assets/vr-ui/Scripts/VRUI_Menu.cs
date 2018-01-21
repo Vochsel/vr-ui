@@ -56,7 +56,7 @@ public class VRUI_Menu : MonoBehaviour
 
     private void Update()
     {
-        ResizeOutline();
+        //ResizeOutline();
     }
 
     /* =================== Menu Functions ================== */
@@ -118,8 +118,17 @@ public class VRUI_Menu : MonoBehaviour
         for (int i = 0; i < interactables.Length; ++i)
         {
             VRUI_InteractionSurface interactable = interactables[i];
-            Vector3 ls = interactable.transform.localScale;
-            Bounds bb = new Bounds(interactable.transform.localPosition, Vector3.Scale(interactable.GetComponent<BoxCollider>().size, new Vector3(ls.x, ls.y, ls.z)));
+
+            if (!interactable || !interactable.interactionTrigger)
+                continue;
+
+            Bounds mb = interactable.interactionTrigger.bounds;
+
+            Vector3 physicalSize = mb.size;
+            //physicalSize = Vector3.Scale(physicalSize * 0.1f, interactable.transform.localScale);
+            physicalSize = new Vector3(physicalSize.x, physicalSize.z, physicalSize.y);
+
+            Bounds bb = new Bounds(interactable.transform.localPosition, physicalSize);
             if (i == 0)
                 b = bb;
             else
@@ -143,12 +152,11 @@ public class VRUI_Menu : MonoBehaviour
         {
             border.transform.localPosition = b.center;
             Vector3 s = new Vector3(b.size.x, b.size.y, b.size.z);
-            s.x *= (1.0f + BorderMargin);
-            s.z *= (1.0f + BorderMargin);
+            s.x += (BorderMargin);
+            s.z += (BorderMargin);
             
             border.transform.localScale = s;// Vector3.Scale(s, transform.localScale);
             
-
             //Move menu bars
             if(TitleBar)
                 TitleBar.transform.localPosition = border.transform.localPosition + (Vector3.back * (border.transform.localScale.z * 0.5f) + Vector3.back * DecorationOffset * 0.1f);
@@ -156,7 +164,7 @@ public class VRUI_Menu : MonoBehaviour
                 HandleBar.transform.localPosition = border.transform.localPosition + (Vector3.forward * (border.transform.localScale.z * 0.5f) + Vector3.forward * DecorationOffset * 0.1f);
         }
     }
-
+    
     /// <summary>
     /// Handles the spawning of enabled menu controls
     /// </summary>

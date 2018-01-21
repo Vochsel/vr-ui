@@ -117,8 +117,7 @@ public class VRUI_InteractionSurface : MonoBehaviour
     protected virtual void Awake()
     {
         LinkComponents();
-
-        AdjustTriggerBounds();
+        
     }
 
     /// <summary>
@@ -128,6 +127,9 @@ public class VRUI_InteractionSurface : MonoBehaviour
     {
         SetupShader(surfaceRenderer);
         SetupVisualizers();
+
+        AdjustTriggerBounds();
+
         if (ValueChangedEvent != null) ValueChangedEvent(this, Value);
         if (ValueChanged != null) ValueChanged.Invoke(Value);
     }
